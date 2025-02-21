@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+	<h1 id="tituloBienvenida">Bienvenido a </h1>
+	<h2 id="tituloMes"><span id="contador"></span></h2>
+	<h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+	<h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+    <div id="divImagen"></div>
+		<div id="imPet" class="OptionsCity">
+			<div id="A1" class="ContImagen">
+				<button  class="botonInv" onclick="Bar()">Visitar el bar</button>
+			</div>
+			<div id="A2" class="ContImagen">
+				<button  class="botonInv" onclick="Tienda()">Visitar la tienda</button>
+			</div>
+			<div id="A3" class="ContImagen">
+				<img src="Ciudades/Objetos/Especias.jpg" alt="Ofertas">
+				<button  class="botonInv" onclick="Inventario()" disabled>Oferta especial</button>
+			</div>
+			<div id="A4" class="ContImagen">
+				<img src="Ciudades/Objetos/Marmita.jpg" alt="Cocina">
+				<button  class="botonInv" onclick="Cocina()">Visitar la cocina</button>
+			</div>
+		</div>
+	</div>	
+  </section>
+  
+  <section>
+
+    <button onclick="VolverHome()">Volver a casa</button>
+	<br>
+	<br>
+	<button id="start" style="background-color: #333333" onclick="Restart()">Reiniciar Juego</button>
+
+  </section>
+
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div class="modalCiudad">
+          <p id="TextoModal">¡Has llegad a Atenas!</p>
+          <a id="fotoModal">
+            <img src="Ciudades/Atenas_Spring.jpg" alt="Hamburguesa">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+ 
+
+  <script>
+
+	// Obtener la ciudad de la URL
+		var urlParams = new URLSearchParams(window.location.search);
+		var ciudad = urlParams.get('ciudad');
+
+//		mostrarModal();   
+//       document.getElementById('TextoModal').textContent = "Bienvenido a " + ciudad;
+//	   var imgCity = FindImg(ciudad);
+//       document.getElementById('fotoModal').innerHTML = '<img src="' + imgCity + '" alt="Empty">';
+
+
+
+
+	// Actualizar el contenido del título con la ciudad
+    var tituloBienvenida = document.getElementById('tituloBienvenida');
+
+    tituloBienvenida.innerText +=' ' + ciudad
+	
+    // Añadir una imagen
+	var imagen = AddImg(ciudad);
+	var imagenBar = AddBar(ciudad);
+	var imagenTienda = AddTienda(ciudad);
+	var imagenInv = AddImg(ciudad);
+	
+	// Actualizar el contenido del título con la ciudad
+    var divImagen = document.getElementById('divImagen');
+	divImagen.appendChild(imagen);
+	var divBar = document.getElementById('A1');
+	divBar.appendChild(imagenBar);
+	var divTienda = document.getElementById('A2');
+	divTienda.appendChild(imagenTienda);
+
+	// Obtener el elemento de la lista desplegable
+    //var listaDesplegable = document.getElementById("ciudades");
+	
+    // Rellenar la lista desplegable con las opciones
+    //ciudades.forEach(function(opcion) {
+	//if (opcion == ciudad) {
+    //    ;
+    //} else {
+    //  var nuevaOpcion = document.createElement("option");
+    //  nuevaOpcion.value = opcion;
+    //  nuevaOpcion.text = opcion;
+    //  listaDesplegable.add(nuevaOpcion);
+	//  }
+    //});
+
+	//var seleccion = listaDesplegable.value;
+
+  </script>
+  
+	
+
+</body>
+</html>

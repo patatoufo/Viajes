@@ -1,0 +1,14 @@
+3.1 	La ciudad actual sale la primera
+3.2 	Añado boton para quedarse en la ciudad. La ciudad no sale en el desplegable.
+4.0 	Viajar cuesta dinero y hay un bar donde trabajar.
+	Nueva ciudad : Roma 
+4.1	Añado tiendas.
+	Madrid, Paris, Berlin y Atenas tienen tienda distinta
+	Edimburgo tiene las estaciones (falta Londres y Cesky Krumlov)
+4.2	Todas las ciudades tienen tienda; bar y estaciones.
+5.0	He añadido las tiendas y el inventario.
+	Los iconos salen dinamicamente en las tiendas y el inventario.
+5.1	Las cosas se pueden vender en el bar. Hay objetos especificos de algunas ciudades.
+	Nueva ciudad : Salzburgo
+6.0	He añadido la cocina para hacer recetas. Hay 2 recetas.
+6.1	Hay mas recetas y un libro de recetas. No podemos cocinar si no hay ingredientes.

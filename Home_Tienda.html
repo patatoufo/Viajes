@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+	<h1 id="tituloBienvenida">Bienvenido a la tienda</h1>
+	<h2 id="tituloMes"><span id="contador"></span></h2>
+	<h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+	<h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+    <div id="divImagen"></div>
+	<div id="HomeRest" class="contHomeRest">
+
+</div>
+
+		</div>	
+  </section>
+  
+  <section>
+	<button onclick="SeguirHome()">Salir de la tienda</button>
+	<button onclick="GestRest()">Ver pedidos restaurante</button>
+	<br>
+	<br>
+	<button id="start" style="background-color: #333333" onclick="Restart()">Reiniciar Juego</button>
+
+  </section>
+
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div id="modalHome" class="modalCiudad">
+          <p id="TextoModalHome"></p>
+		  <p id="ModalHomeRestaurante"></p>
+          <a id="fotoModalHome">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+
+  <script>
+
+	// Obtener la ciudad de la URL
+		var urlParams = new URLSearchParams(window.location.search);
+		var ciudad = urlParams.get('ciudad');
+		var inventario = JSON.parse(localStorage.getItem('inventario'));
+		var pedidos = JSON.parse(localStorage.getItem('pedidos'));
+		
+		var indexFirstTienda = encontrarPedido('Tienda',1);
+		var indexSecondTienda = encontrarPedido('Tienda',2);
+		//var indexFirstRest = encontrarPrimerPedido('Restaurante');
+		console.log(pedidos);
+
+		if (indexFirstTienda !== -1 ) {
+			var imagenCity = "Ciudades/Clientes/" + pedidos[indexFirstTienda].cliente + ".jpg";
+		} else if (indexSecondTienda !== -1 ) {
+			var imagenCity = "Ciudades/Clientes/" + pedidos[indexSecondTienda].cliente + ".jpg";
+		} else {
+			var imagenCity = "Ciudades/Clientes/Vacio.jpg";
+		}
+	
+			CreaBloquePedido(indexFirstTienda,HomeRest);
+			//CreaBloquePedido(indexSecondTienda,HomeRest);
+
+
+
+
+    // Añadir una imagen
+    var imagen = document.createElement("img");
+    imagen.src = imagenCity;
+    var divImagen = document.getElementById('divImagen');
+	divImagen.appendChild(imagen);
+
+	function CreaBloquePedido(indexPedidos,divPadre) {
+		if (indexPedidos !== -1) {
+			//Pedido Tienda
+			var indexObjeto = inventario.findIndex(item => item.nombre === pedidos[indexPedidos].nombre);
+			var cantInv = indexObjeto !== -1 ? inventario[indexObjeto].cantidad : 0;
+			var divNuevo = document.createElement("div");
+				divNuevo.id = "Imagen";
+
+				var imagenObj = AddObjeto(pedidos[indexPedidos].nombre);
+				divNuevo.appendChild(imagenObj);
+
+				divPadre.appendChild(divNuevo);		
+				
+			var divNuevoT = document.createElement("div");
+			divNuevoT.id = "Boton+Cant";
+			
+				var tituloNuevo = document.createElement("a");			
+					tituloNuevo.id = "TituloHomeRest0";
+					if (indexObjeto !== -1) {
+					tituloNuevo.textContent = "Tienes " + cantInv
+					}
+					else {
+					tituloNuevo.textContent = "Tienes 0"
+					}
+				divNuevoT.appendChild(tituloNuevo);
+				divNuevoT.appendChild(document.createElement("br"));	
+
+				var botonNuevo = document.createElement("button");
+					botonNuevo.id = "HomeRest0";
+					var precio = CalculaPrecioVentaHome(pedidos[indexPedidos].nombre)
+					botonNuevo.textContent = "Vender +" + pedidos[indexPedidos].cantidad * precio + "€" ;
+					var precio = CalculaPrecioVentaHome(pedidos[indexPedidos].nombre)
+					botonNuevo.onclick = function() {
+					VenderHome(pedidos[indexPedidos].nombre,precio,pedidos[indexPedidos].cantidad);
+					pedidos[indexPedidos].estado = 'cerrado';
+					localStorage.setItem('pedidos', JSON.stringify(pedidos));
+					};
+					if (cantInv < pedidos[indexPedidos].cantidad) {
+						botonNuevo.disabled = true; // Desactiva el botón
+						botonNuevo.textContent = "No tienes suficiente";
+						} 
+			divNuevoT.appendChild(botonNuevo);	
+			divPadre.appendChild(divNuevoT);
+
+			var divNuevoB = document.createElement("div");
+			divNuevoB.classList.add("textHomeRest")
+			divNuevoB.innerText = pedidos[indexPedidos].texto
+			divPadre.appendChild(divNuevoB);
+
+} else {
+			
+			var divNuevo = document.createElement("div");
+
+		    var imagenObj = document.createElement("img");
+					imagenObj.src = "Ciudades/Otros/Reloj.jpg";
+					divNuevo.appendChild(imagenObj);
+
+			divPadre.appendChild(divNuevo);	
+
+			var divNuevoT = document.createElement("div");
+			divNuevoT.id = "Boton+Cant";
+
+			var tituloNuevo = document.createElement("a");			
+					tituloNuevo.id = "TituloHomeRest0";
+					tituloNuevo.textContent = "Sin pedidos"
+
+			divNuevoT.appendChild(tituloNuevo);
+
+			divPadre.appendChild(divNuevoT);
+
+			var divNuevoB = document.createElement("div");
+			divNuevoB.classList.add("textHomeRest")
+			divNuevoB.innerText = "No tienes pedidos. Vuelve en otro momento"
+			divPadre.appendChild(divNuevoB);
+}}
+
+  </script>
+  
+	
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+	<h1 id="tituloBienvenida">Bienvenido al huerto</h1>
+	<h2 id="tituloMes"><span id="contador"></span></h2>
+	<h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+	<h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+    <div id="divImagen"></div>
+	<div id="HomeRest" class="contHomeRest">
+
+</div>
+
+		</div>	
+  </section>
+  
+  <section>
+	<button onclick="SeguirHome()">Salir del huerto</button>
+	<br>
+	<br>
+	<button id="start" style="background-color: #333333" onclick="Restart()">Reiniciar Juego</button>
+
+  </section>
+
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div id="modalHome" class="modalCiudad">
+          <p id="TextoModalHome"></p>
+		  <p id="ModalHomeRestaurante"></p>
+          <a id="fotoModalHome">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+
+  <script>
+
+	// Obtener la ciudad de la URL
+		var urlParams = new URLSearchParams(window.location.search);
+		var ciudad = urlParams.get('ciudad');
+		var inventario = JSON.parse(localStorage.getItem('inventario'));
+		var huerto = JSON.parse(localStorage.getItem('huerto'));
+
+		console.log(huerto);	
+		// Añadir una imagen
+		var imagen = document.createElement("img");
+		var imagenCity = "Ciudades/Clientes/Granjero.jpg";
+		imagen.src = imagenCity;
+		var divImagen = document.getElementById('divImagen');
+		divImagen.appendChild(imagen);
+
+		var indexFirstHuerto = encontrarFruta(1);
+		console.log(indexFirstHuerto);	
+
+
+	CreaBloqueFruta(indexFirstHuerto,HomeRest);
+
+
+	function CreaBloqueFruta(indexHuerto,divPadre) {
+		if (indexHuerto !== -1) {
+			//Fruta
+			var divNuevo = document.createElement("div");
+				divNuevo.id = "Imagen";
+
+				var imagenObj = AddObjeto(huerto[indexHuerto].nombre);
+				divNuevo.appendChild(imagenObj);
+				divPadre.appendChild(divNuevo);		
+				
+			var divNuevoT = document.createElement("div");
+			divNuevoT.id = "Boton+Cant";
+			
+				var botonNuevo = document.createElement("button");
+					botonNuevo.id = "Huerto0";
+					var precio = huerto[indexHuerto].precio;
+					botonNuevo.textContent = "Comprar (- " + huerto[indexHuerto].cantidad * precio + "€ )" ;
+					botonNuevo.onclick = function() {
+					ComprarHome(huerto[indexHuerto].nombre,precio,huerto[indexHuerto].cantidad);
+					huerto[indexHuerto].estado = 'cerrado';
+					localStorage.setItem('huerto', JSON.stringify(huerto));
+					};
+			divNuevoT.appendChild(botonNuevo);	
+			var brN = document.createElement("br");
+			divNuevoT.appendChild(brN);	
+			var brN = document.createElement("br");
+			divNuevoT.appendChild(brN);	
+			var botonNuevo = document.createElement("button");
+					botonNuevo.id = "Huerto1";
+					botonNuevo.textContent = "Rechazar" ;
+					botonNuevo.onclick = function() {
+					ComprarHome(huerto[indexHuerto].nombre,precio,0);
+					huerto[indexHuerto].estado = 'cerrado';
+					localStorage.setItem('huerto', JSON.stringify(huerto));
+					};
+			divNuevoT.appendChild(botonNuevo);	
+
+			divPadre.appendChild(divNuevoT);
+
+			var divNuevoB = document.createElement("div");
+			divNuevoB.classList.add("textHomeRest")
+			divNuevoB.innerText = huerto[indexHuerto].texto
+			divPadre.appendChild(divNuevoB);
+
+} else {
+			
+			var divNuevo = document.createElement("div");
+
+		    var imagenObj = document.createElement("img");
+					imagenObj.src = "Ciudades/Otros/Reloj.jpg";
+					divNuevo.appendChild(imagenObj);
+
+			divPadre.appendChild(divNuevo);	
+
+			var divNuevoT = document.createElement("div");
+			divNuevoT.id = "Boton+Cant";
+
+			var tituloNuevo = document.createElement("a");			
+					tituloNuevo.id = "TituloHomeRest0";
+					tituloNuevo.textContent = "No tengo nada"
+
+			divNuevoT.appendChild(tituloNuevo);
+
+			divPadre.appendChild(divNuevoT);
+
+			var divNuevoB = document.createElement("div");
+			divNuevoB.classList.add("textHomeRest")
+			divNuevoB.innerText = "No tengo fruta por ahora. Vuelve en otro momento."
+			divPadre.appendChild(divNuevoB);
+}}
+
+  </script>
+  
+	
+
+</body>
+</html>

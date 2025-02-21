@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+  <h1 id="tituloBienvenida">Bienvenido a la tienda del barrio</h1>
+ <h2 id="tituloMes"><span id="contador"></span></h2>
+ <h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+ <h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+    <div id="divImagen"></div>
+		<div id="imPetTienda" class="OptionsTienda">
+
+		</div>	
+  </section>
+  
+  <section>
+  	<div>
+		<button onclick="SeguirHome()">Salir de la tienda de barrio</button>
+	</div>
+	<div style="margin-top: 10px;">
+		<button style="background-color: #333333" id="start"  onclick="Restart()">Reiniciar Juego</button>
+	</div>
+  </section>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+ 
+
+  <script>
+
+	var inventario = JSON.parse(localStorage.getItem('inventario'));
+	var arrayHoy = JSON.parse(localStorage.getItem('ElementosTiendaBHoy'));
+	console.log(arrayHoy);
+ for (var i = 0; i < arrayHoy.length; i++) {
+    // Utilizar una función auxiliar para capturar el valor actual de i
+    (function(index) {
+	
+	
+        	var divNuevo = document.createElement("div");
+		divNuevo.classList.add("imgPetite2")
+
+			var divNuevo2 = document.createElement("div");
+				divNuevo2.id = "Tienda" + index;
+			var imagenObj = AddObjeto(arrayHoy[index].nombre);
+		divNuevo2.appendChild(imagenObj);
+
+		divNuevo.appendChild(divNuevo2);
+
+		var indexObjeto = inventario.findIndex(item => item.nombre === arrayHoy[index].nombre);
+		
+		var divNuevo3 = document.createElement("div");
+		var tituloNuevoCant = document.createElement("a");
+		tituloNuevoCant.id = "TituloTiendaCant" + index;
+		tituloNuevoCant.textContent = arrayHoy[index].nombre + " : " + arrayHoy[index].cantidad
+
+		var tituloNuevo = document.createElement("a");
+		tituloNuevo.id = "TituloTienda" + index;
+
+		if (indexObjeto !== -1) {
+			tituloNuevo.textContent = arrayHoy[index].nombre + " : " + inventario[indexObjeto].cantidad
+			} else {
+			tituloNuevo.textContent = arrayHoy[index].nombre + " : 0"
+		}
+
+		var tituloNuevoPrecio = document.createElement("a");			
+		tituloNuevoPrecio.id = "PrecioTienda" + index;
+		tituloNuevoPrecio.textContent = "Precio : " + arrayHoy[index].precio
+
+		//divNuevo3.appendChild(tituloNuevoCant);
+		//divNuevo3.appendChild(document.createElement("br"));
+		divNuevo3.appendChild(tituloNuevo);
+		divNuevo3.appendChild(document.createElement("br"));
+		divNuevo3.appendChild(tituloNuevoPrecio);
+
+		divNuevo.appendChild(divNuevo3);
+
+		var divNuevo4 = document.createElement("div");
+		var botonNuevo = document.createElement("button");
+		botonNuevo.id = "Tienda" + index;
+		botonNuevo.textContent = "Comprar ";
+		botonNuevo.onclick = function() {
+			ComprarTiendaBarrio(arrayHoy[index].nombre,arrayHoy[index].precio); 
+		};
+		//console.log("Queres comprar" + arrayHoy[index].nombre + "a " + arrayHoy[index].precio);
+		divNuevo4.appendChild(botonNuevo);	
+	
+	divNuevo.appendChild(divNuevo4);
+
+    // Agregar el div al contenedor
+    imPetTienda.appendChild(divNuevo);
+
+    })(i);
+  }
+
+
+	// Añadir una imagen
+	var imagen = document.createElement("img");
+	var imagenCity = "Ciudades/Otros/TiendaBarrio.jpg";
+	imagen.src = imagenCity;
+	var divImagen = document.getElementById('divImagen');
+	divImagen.appendChild(imagen);
+  </script>
+  
+	
+
+</body>
+</html>

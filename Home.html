@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+	<h1 id="tituloBienvenida">Bienvenido a casa</h1>
+	<h2 id="tituloMes"><span id="contador"></span></h2>
+	<h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+	<h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+		<div id="imPetHome" class="OptionsCity">
+			<div id="A1" class="ContImagen">
+				<img src="Ciudades/Objetos/Mochila.jpg" alt="Inventario">
+				<button  class="botonInv" onclick="Inventario()">Inventario</button>
+			</div>
+			<div id="A2" class="ContImagen">
+				<img src="Ciudades/Otros/Bar.jpg" alt="Bar">
+				<button  class="botonInv" onclick="GestBar()">Gestionar el bar</button>
+			</div>
+			<div id="A5" class="ContImagen">
+				<button  class="botonInv" onclick="GestTienda()">Gestionar la tienda</button>
+			</div>
+			<div id="A6" class="ContImagen">
+				<button  class="botonInv" onclick="GestRest()">Gestionar el restaurante</button>
+			</div>
+			<div id="A3" class="ContImagen">
+				<img src="Ciudades/Objetos/Marmita.jpg" alt="Cocina">
+				<button  class="botonInv" onclick="CocinaHome()">Visitar la cocina</button>
+			</div>
+			<div id="A4" class="ContImagen">
+				<img src="Ciudades/Otros/TiendaBarrio.jpg" alt="TiendaBarrio">
+				<button  class="botonInv" onclick="TiendaBarrio()">Visitar la tienda del barrio</button>
+			</div>
+			<div id="A7" class="ContImagen">
+				<img src="Ciudades/Otros/Destileria.jpg" alt="Destileria">
+				<button  class="botonInv" onclick="Destileria()" disabled>Visitar la destileria</button>
+			</div>
+			<div id="A8" class="ContImagen">
+				<img src="Ciudades/Otros/Huerto.jpg" alt="Inventario">
+				<button  class="botonInv" onclick="Huerto()">Visitar el huerto</button>
+			</div>
+		</div>
+	</div>	
+  </section>
+  
+  <section>
+    <select id="ciudades"></select>
+    <button onclick="Viajar()">Viajar (-10 €)</button>
+	<button onclick="VolverHome()">Esperar un tiempo</button>
+	<br>
+	<button id="start" style="background-color: #333333" onclick="Restart()">Reiniciar Juego</button>
+
+  </section>
+
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div id="modalHome" class="modalCiudad">
+          <p id="TextoModalHome"></p>
+		  <p id="ModalHomeRestaurante"></p>
+          <a id="fotoModalHome">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+ 
+
+  <script>
+
+	// Obtener la ciudad de la URL
+		var urlParams = new URLSearchParams(window.location.search);
+		var ciudad = urlParams.get('ciudad');
+		var turno = urlParams.get('turno');
+		var year = localStorage.getItem('year') || 0;
+		var contadorHome = localStorage.getItem('contador') || 0;		
+		var nombreMes = nombresMeses[contadorHome - 1];
+		var edificios = JSON.parse(localStorage.getItem('edificios'));
+		var pedidos = JSON.parse(localStorage.getItem('pedidos'));
+		var huerto = JSON.parse(localStorage.getItem('huerto'));
+
+		if (turno == 'non') {
+		} else {
+			mostrarModal();   
+			document.getElementById('TextoModalHome').textContent = "Estamos en " + nombreMes + " " + year;
+			var imgCity = FindImg(ciudad);
+			console.log(edificios);
+			console.log(pedidos);
+			console.log(huerto);
+			console.log(objetosTiendaBarrio);
+
+				function seleccionarElementosAlAzar(objetosTiendaBarrio) {
+			    var arrayHoy = objetosTiendaBarrio.slice();
+    			var elementosSeleccionados = [];
+		    	for (var i = 0; i < 4; i++) {
+	        	var indiceAleatorio = Math.floor(Math.random() * arrayHoy.length);
+	        	elementosSeleccionados.push(arrayHoy[indiceAleatorio]);
+				var elemento = arrayHoy[indiceAleatorio];
+				elemento.cantidad = 3;
+	        	arrayHoy.splice(indiceAleatorio, 1);
+    			}
+    			return elementosSeleccionados;
+				}
+				var arrayHoy = seleccionarElementosAlAzar(objetosTiendaBarrio);
+				localStorage.setItem('ElementosTiendaBHoy', JSON.stringify(arrayHoy));				
+				console.log(arrayHoy);
+
+		}
+		var pedidosCerrados = pedidos.filter(function(pedido) {
+			return pedido.estado === 'cerrado';
+		});
+		//document.getElementById('fotoModalHome').innerHTML = '<img src="' + imgCity + '" alt="Empty">';
+
+		// Obtener el elemento donde agregar los edificios
+		var contenedorEdificios = document.getElementById('ModalHomeRestaurante');
+		var elemento = document.createElement('br');
+		contenedorEdificios.appendChild(elemento);
+		// Iterar sobre los edificios y agregarlos al HTML
+		edificios.forEach(function(edificio) {
+		var elemento = document.createElement('p');
+		var estado = edificio.estado === "abierto" ? "<span style='color: green;'>Abierto</span>" : "<span style='color: red;'>Cerrado</span>";
+		elemento.innerHTML = `<strong>${edificio.nombre} : ${estado}<strong>`;
+		contenedorEdificios.appendChild(elemento);
+
+		})
+		var elemento = document.createElement('br');
+		contenedorEdificios.appendChild(elemento);
+		
+		var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+		var recetasNoNuevas = arrayRecetas.filter(function(receta) {
+			return receta.nueva === "0";
+		});
+		var recetasEsp = arrayRecetas.filter(function(receta) {
+			return receta.tiporeceta === "especial";
+		});
+		var recetasEspNoNuevas = arrayRecetas.filter(function(receta) {
+			return (receta.tiporeceta === "especial" && receta.nueva === "0");
+		});
+		var recetasUni = arrayRecetas.filter(function(receta) {
+			return receta.tiporeceta === "unica";
+		});
+		var recetasUniNoNuevas = arrayRecetas.filter(function(receta) {
+			return (receta.tiporeceta === "unica" && receta.nueva === "0");
+		});
+
+		var elemento = document.createElement('p');
+
+		// Crear la tabla y sus elementos
+		var tabla = document.createElement('table');
+		tabla.style.border = '1px solid black'; // Borde de la tabla
+		tabla.style.borderCollapse = 'collapse'; // Colapso de bordes de la tabla
+	
+		AddRow("Pedidos entregados",pedidosCerrados.length);
+		AddRow("Recetas",recetasNoNuevas.length + "/" + arrayRecetas.length);
+		AddRow("Recetas Premium",recetasEspNoNuevas.length + "/" + recetasEsp.length);
+		AddRow("Recetas Unicas",recetasUniNoNuevas.length + "/" + recetasUni.length);
+
+		// Añadir la tabla al elemento <p>
+		elemento.appendChild(tabla);
+		contenedorEdificios.appendChild(elemento);
+
+
+    // Añadir una imagen
+	var imagenCity = "Ciudades/Otros/Home.jpg";
+    var imagen = document.createElement("img");
+    imagen.src = imagenCity;
+	var imagenA5 = "Ciudades/Otros/Tienda.jpg";
+	var imgA5 = document.createElement("img");
+    imgA5.src = imagenA5;
+	var imagenA6 = "Ciudades/Otros/Restaurante.jpg";
+	var imgA6 = document.createElement("img");
+    imgA6.src = imagenA6;
+	//imgA2.className = 'img-blanco-negro';
+	// Actualizar el contenido del título con la ciudad
+    //var divImagen = document.getElementById('divImagen');
+	//divImagen.appendChild(imagen);
+	var divA5 = document.getElementById('A5');
+	divA5.appendChild(imgA5);
+	var divA6 = document.getElementById('A6');
+	divA6.appendChild(imgA6);
+	//var divInv = document.getElementById('Inventario');
+	//divInv.appendChild(imagenInv);
+	//var divVisit2 = document.getElementById('Visit2');
+	//divVisit2.appendChild(imagenWork);
+	//var divVisit3 = document.getElementById('Visit3');
+	//divVisit3.appendChild(imagenWork2);
+
+    // Mostrar los valores de las variables en la página
+    //document.body.innerHTML += '<p>Tienes ' + dinero + ' euros.</p>';
+    //document.body.innerHTML += '<p>Tienes ' + puntos + ' puntos.</p>';
+
+	// Obtener el elemento de la lista desplegable
+    var listaDesplegable = document.getElementById("ciudades");
+	
+    // Rellenar la lista desplegable con las opciones
+    ciudades.forEach(function(opcion) {
+	  var nuevaOpcion = document.createElement("option");
+      nuevaOpcion.value = opcion;
+      nuevaOpcion.text = opcion;
+      listaDesplegable.add(nuevaOpcion);
+	  }
+    );
+
+	var seleccion = listaDesplegable.value;
+
+function AddRow(texto, valor) {
+		var fila = tabla.insertRow();
+		var celda1 = fila.insertCell();
+		var celda2 = fila.insertCell();
+		// Establecer el contenido de las celdas
+		celda1.textContent = texto;
+		celda2.textContent = valor;
+		// Establecer estilos de la tabla y las celdas
+		celda1.style.border = '1px solid black'; // Borde de la primera celda
+		celda2.style.border = '1px solid black'; // Borde de la segunda celda
+		celda2.style.textAlign = 'center'; // Centrar el texto en la segunda celda
+		celda1.style.padding = '8px'; // Agregar un poco de margen a la segunda celda
+		celda2.style.padding = '8px'; // Agregar un poco de margen a la segunda celda
+}
+
+
+  </script>
+  
+	
+
+</body>
+</html>

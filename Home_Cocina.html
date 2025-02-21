@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* Estilo básico para el modal y el fondo oscuro */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+    </style>
+    <title>Bienvenido a la Aventura</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="contador.js" defer></script>
+  </head>
+  <body>
+    <script src="variables.js"></script>
+    <h1 id="tituloBienvenida">Bienvenido a la Cocina</h1>
+    <h2 id="tituloMes">
+      <span id="contador"></span>
+    </h2>
+    <h3 id="tituloDinero">Tienes <span id="dinero"></span> € </h3>
+    <h3 id="alertaDinero">
+      <span id="alertaDinero"></span>
+    </h3>
+    <section class="secImagen">
+      <div id="divImagen"></div>
+      <div id="imPetTienda" class="OptionsTienda">
+        <div class="imgPetite2">
+          <div id="Coc0"></div>
+          <div>
+            <a id="TituloCoc0"></a>
+          </div>
+          <div>
+            <div>
+				<a id="Titulo2Coc0"></a>
+				<br>
+				<a id="Titulo3Coc0"></a>
+            </div>
+          </div>
+        </div>
+        <div class="imgPetite2">
+          <div id="Coc1"></div>
+          <div>
+            <a id="TituloCoc1"></a>
+          </div>
+          <div>
+            <a id="Titulo2Coc1"></a>
+          </div>
+        </div>
+        <div class="imgPetite2">
+		</div>
+        <div class="imgPetite2">
+          <div id="Coc3">
+			<img src="Ciudades/Objetos/RecipeBook.jpg" alt="RecipeBook"></div>
+          <div>
+            <a id="TituloCoc3">Libro de recetas</a>
+          </div>
+          <div>
+            <a id="Titulo2Coc3"></a>
+            <br>
+            <a id="Titulo3Coc3" style="color: blue; font-weight: bold;">En construccion</a>
+            <br>
+            <a id="Titulo4Coc3" style="color: green; font-weight: bold;">En construccion</a>
+          </div>
+        </div>
+        <div class="imgPetite2">
+          <div id="Ingred1">         
+          </div>
+          <div>
+            <a id="TituloIngred1"></a>
+          </div>
+          <div>
+            <a id="Titulo2Ingred1"></a>
+            <br>
+            <a id="Titulo3Ingred1"></a>
+          </div>
+        </div>
+        <div class="imgPetite2">
+          <div id="Ingred2">         
+          </div>
+          <div>
+            <a id="TituloIngred2"></a>
+          </div>
+          <div>
+            <a id="Titulo2Ingred2"></a>
+            <br>
+            <a id="Titulo3Ingred2"></a>
+          </div>
+        </div>
+        <div class="imgPetite2">
+		</div>
+        <div class="imgPetite2">
+          <div id="Inventario">
+            <img src="Ciudades/Objetos/Mochila.jpg" alt="Inventario">
+          </div>
+          <div>
+            <button onclick="Inventario()">Visitar el inventario</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section style="height: 100px">
+      <select id="Cocina0"></select>
+      <select id="Cocina1"></select>
+      <button onclick="Cocinar()">Cocinar</button>
+    </section>
+    <section>
+      <div>
+        <button onclick="SeguirHome()">Volver a la ciudad</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button style="background-color: #333333" id="start" onclick="Restart()">Reiniciar Juego</button>
+      </div>
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div class="modal-content">
+          <p id="TextoModal">¡Has descubierto la hamburguesa!</p>
+          <a id="fotoModal">
+            <img src="Ciudades/Objetos/Hamburguesa.jpg" alt="Hamburguesa">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <br>
+      <br>
+      <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+      <p>&copy; Todas las imagenenes generadas con IA.</p>
+    </footer>
+    <br>
+    <br>
+ 
+
+  <script>
+var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+
+LibroRecetas()
+
+// Obtener la ciudad de la URL
+var urlParams = new URLSearchParams(window.location.search);
+var ciudad = urlParams.get('ciudad');
+var inventario = JSON.parse(localStorage.getItem('inventario'));
+var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+var recetasNoNuevas = arrayRecetas.filter(function(receta) {
+	return receta.nueva === "0";
+});
+
+
+DesplegableRecetas("Cocina0")
+
+function DesplegableRecetas(id) {
+	var listaCocinai = document.getElementById(id);
+	var opcionVacia = document.createElement("option");
+	opcionVacia.value = "";
+	opcionVacia.text = "Seleccione una opción";
+	opcionVacia.selected = true;
+	opcionVacia.disabled = true;
+	listaCocinai.add(opcionVacia, listaCocinai.options[0]);
+		// Rellenar la lista desplegable con los objetos del inventario
+		recetasNoNuevas.forEach(function(opcion) {
+		var nuevaOpcion = document.createElement("option");
+		nuevaOpcion.value = opcion.nombre;
+		nuevaOpcion.text = opcion.nombre;
+		listaCocinai.add(nuevaOpcion);
+})
+}
+
+var listaCocina1 = document.getElementById("Cocina1");
+  var opciones = ["1","2","3","4","5"];
+  for (var i = 0; i < opciones.length; i++) {
+    var nuevaOpcion = document.createElement("option");
+    nuevaOpcion.value = opciones[i];
+    nuevaOpcion.text = opciones[i];
+    listaCocina1.add(nuevaOpcion);
+  }
+// Cuando cambia el select, añado la imagen
+
+Cocina0.addEventListener("change", function() {
+    var inventario = JSON.parse(localStorage.getItem('inventario'));
+    var seleccion = Cocina0.value;
+	  var ing1 = ObtenerIngrediente1(seleccion);
+	  var ing2 = ObtenerIngrediente2(seleccion);
+    document.getElementById('Coc0').innerHTML = '<img src="Ciudades/Objetos/' + seleccion + '.jpg" alt="' + seleccion + '">';
+    document.getElementById('Ingred1').innerHTML = '<img src="Ciudades/Objetos/' + ing1 + '.jpg" alt="' + ing1 + '">';
+	  document.getElementById('Ingred2').innerHTML = '<img src="Ciudades/Objetos/' + ing2 + '.jpg" alt="' + ing2 + '">';
+    document.getElementById('Titulo2Coc0').textContent = seleccion;
+    var cantidadS = BuscaObjetoCantidad(seleccion);
+	  document.getElementById('Titulo3Coc0').textContent = "Cantidad: " + cantidadS;
+	  document.getElementById('Titulo2Ingred1').textContent = ing1;
+	  document.getElementById('Titulo2Ingred2').textContent = ing2;
+    var indexObjeto = inventario.findIndex(item => item.nombre === ing1);
+    document.getElementById('Titulo3Ingred1').textContent = "Cantidad: " + inventario[indexObjeto].cantidad;
+    var indexObjeto = inventario.findIndex(item => item.nombre === ing2);
+    document.getElementById('Titulo3Ingred2').textContent = "Cantidad: " + inventario[indexObjeto].cantidad;
+
+});
+
+	// Añadir una imagen
+	var imagen = document.createElement("img");
+	var imagenCity = "Ciudades/Otros/TiendaBarrio.jpg";
+	imagen.src = imagenCity;
+	var divImagen = document.getElementById('divImagen');
+	divImagen.appendChild(imagen);
+
+
+function ObtenerIngrediente1(receta) {
+	var indexReceta = arrayRecetas.findIndex(item => item.nombre === receta);
+	var ingred = arrayRecetas[indexReceta].ingrediente1;
+	return ingred
+}
+function ObtenerIngrediente2(receta) {
+	var indexReceta = arrayRecetas.findIndex(item => item.nombre === receta);
+	var ingred = arrayRecetas[indexReceta].ingrediente2;
+	return ingred
+}
+
+
+function Cocinar() {
+    var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+	  LibroRecetas();
+    var receta = Cocina0.value;
+    var cantidadToCook = Cocina1.value;
+	  var ingrediente1 = ObtenerIngrediente1(receta);
+	  var ingrediente2 = ObtenerIngrediente2(receta);
+    var cantidad1 = BuscaObjetoCantidad(ingrediente1);
+    var cantidad2 = BuscaObjetoCantidad(ingrediente2);
+
+
+    if ((cantidad1 > (cantidadToCook - 1)) && (cantidad2 > (cantidadToCook - 1))) {
+        console.log("Hay ingredientes")
+
+          sumarObjetoInventario(receta,cantidadToCook);
+          restarObjetoInventario(ingrediente1,cantidadToCook);
+          restarObjetoInventario(ingrediente2,cantidadToCook);
+
+	var cantidadRec = BuscaObjetoCantidad(receta);
+    var cantidad1 = BuscaObjetoCantidad(ingrediente1);
+    var cantidad2 = BuscaObjetoCantidad(ingrediente2);
+
+    document.getElementById('Titulo3Coc0').textContent = "Cantidad: " + cantidadRec;
+	document.getElementById('Titulo3Ingred1').textContent = "Cantidad: " + cantidad1;
+	document.getElementById('Titulo3Ingred2').textContent = "Cantidad: " + cantidad2;
+        
+    } else {
+        mostrarModal();
+        document.getElementById('TextoModal').textContent = "No tienes ingredientes para cocinar";
+        document.getElementById('fotoModal').innerHTML = '<img src="Ciudades/Objetos/EmptyFridge.jpg" alt="Empty">';
+    }
+    LibroRecetas();
+
+
+	//CocinaHome();
+}
+
+function LibroRecetas() {
+    var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+
+    var recetasNoNuevas = arrayRecetas.filter(function(receta) {
+        return receta.nueva === "0";
+    });
+    var recetasEsp = arrayRecetas.filter(function(receta) {
+        return receta.tiporeceta === "especial";
+    });
+    var recetasEspNoNuevas = arrayRecetas.filter(function(receta) {
+        return (receta.tiporeceta === "especial" && receta.nueva === "0");
+    });
+    var recetasUni = arrayRecetas.filter(function(receta) {
+        return receta.tiporeceta === "unica";
+    });
+    var recetasUniNoNuevas = arrayRecetas.filter(function(receta) {
+        return (receta.tiporeceta === "unica" && receta.nueva === "0");
+    });
+
+    //console.log("Dentro de Libro" + recetasNoNuevas.length + " / " + arrayRecetas.length);
+    //console.log("Dentro de Libro Esp " + recetasEspNoNuevas.length + " / " + recetasEsp.length);
+    //console.log("Dentro de Libro Uni " + recetasUniNoNuevas.length + " / " + recetasUni.length);
+    document.getElementById('Titulo2Coc3').textContent = "Recetas : " + recetasNoNuevas.length + " / " + arrayRecetas.length;
+    document.getElementById('Titulo3Coc3').textContent = "Premium : " + recetasEspNoNuevas.length + " / " + recetasEsp.length;
+    document.getElementById('Titulo4Coc3').textContent = "Unicas : " + recetasUniNoNuevas.length + " / " + recetasUni.length;
+}
+
+  </script>
+  
+	
+
+</body>
+</html>

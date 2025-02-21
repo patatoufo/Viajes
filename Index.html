@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de los viajes</title>
+    <style>
+    /* Estilos para la sección notas */
+    .notas {
+      background-color: #bbeafc;
+      padding: 20px;
+      margin-left: 300px;  /* Márgen a la izquierda */
+      margin-right: 300px; /* Márgen a la derecha */
+	  text-align: left;
+	  height: 250px;
+    }
+  </style>
+  <link rel="stylesheet" href="estilos.css">  
+    <script src="contador.js" defer></script>
+</head>
+<body>
+
+  <h1>Bienvenido a la Aventura</h1>
+	<p id="tituloMes">Empiezas en <span id="contador">0</span> con <span id="dinero">0</span> €</p>
+  
+  <button onclick="iniciarJuego()">Iniciar</button>
+
+  <section class="notas">
+	<p>Version : 7.0</p>
+	<p>El juego comienza en casa, no en una ciudad</p>
+		<ul>
+		<li>Hay un cliente en la tienda y uno en el restaurante</li>
+		<li>Hay un huerto donde un granjero ofrece fruta</li>
+		<li>La fruta no sirve para nada aun</li>
+		<li>Hay una cocina para hacer recetas. Hay 10 recetas. Algunas solo se pueden hacer en una ciudad</li>
+		</ul>
+  </section>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+	
+  </footer>
+
+  <script src="variables.js"></script>
+  <script>
+  
+ 
+    function iniciarJuego() {
+
+	iniciarContador();
+	iniciarDinero();
+	iniciarInventario();
+	iniciarEdificios();	
+	iniciarPedidos();
+	iniciarHuerto();
+	window.location.href = 'Home.html';
+    }
+
+  </script>
+
+</body>
+</html>

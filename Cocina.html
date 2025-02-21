@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* Estilo básico para el modal y el fondo oscuro */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+    </style>
+    <title>Bienvenido a la Aventura</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="contador.js" defer></script>
+  </head>
+  <body>
+    <script src="variables.js"></script>
+    <h1 id="tituloBienvenida">Bienvenido a la Cocina</h1>
+    <h2 id="tituloMes">
+      <span id="contador"></span>
+    </h2>
+    <h3 id="tituloDinero">Tienes <span id="dinero"></span> € </h3>
+    <h3 id="alertaDinero">
+      <span id="alertaDinero"></span>
+    </h3>
+    <section class="secImagen">
+      <div id="divImagen"></div>
+      <div id="imPetTienda" class="OptionsTienda">
+        <div class="imgPetite2">
+          <div id="Coc0"></div>
+          <div>
+            <a id="TituloCoc0"></a>
+          </div>
+          <div>
+            <div>
+              <a id="Titulo2Coc0"></a>
+            </div>
+          </div>
+        </div>
+        <div class="imgPetite2">
+          <div id="Coc1"></div>
+          <div>
+            <a id="TituloCoc1"></a>
+          </div>
+          <div>
+            <a id="Titulo2Coc1"></a>
+          </div>
+        </div>
+        <div class="imgPetite2"></div>
+        <div class="imgPetite2">
+          <div id="Coc3"></div>
+          <div>
+            <a id="TituloCoc3"></a>
+          </div>
+          <div>
+            <a id="Titulo2Coc3"></a>
+          </div>
+        </div>
+        <div class="imgPetite2">
+          <div id="Coc4">
+            <img src="Ciudades/Objetos/RecipeBook.jpg" alt="RecipeBook">
+          </div>
+          <div>
+            <a id="TituloCoc4">Libro de recetas</a>
+          </div>
+          <div>
+            <a id="Titulo2Coc4"></a>
+            <br>
+            <a id="Titulo3Coc4" style="color: blue; font-weight: bold;">En construccion</a>
+            <br>
+            <a id="Titulo4Coc4" style="color: green; font-weight: bold;">En construccion</a>
+          </div>
+        </div>
+        <div class="imgPetite2"></div>		
+        <div class="imgPetite2"></div>
+        <div class="imgPetite2">
+          <div id="Inventario">
+            <img src="Ciudades/Objetos/Mochila.jpg" alt="Inventario">
+          </div>
+          <div>
+            <button onclick="Inventario()">Visitar el inventario</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section style="height: 100px">
+      <select id="Cocina0"></select>
+      <select id="Cocina1"></select>
+      <button onclick="Cocinar()">Cocinar</button>
+    </section>
+    <section>
+      <div>
+        <button onclick="VolverCiudad()">Volver a la ciudad</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button style="background-color: #333333" id="start" onclick="Restart()">Reiniciar Juego</button>
+      </div>
+      <!-- Modal -->
+      <div id="miModal" class="modal">
+        <div class="modal-content">
+          <p id="TextoModal">¡Has descubierto la hamburguesa!</p>
+          <a id="fotoModal">
+            <img src="Ciudades/Objetos/Hamburguesa.jpg" alt="Hamburguesa">
+          </a>
+          <br>
+          <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <br>
+      <br>
+      <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+      <p>&copy; Todas las imagenenes generadas con IA.</p>
+    </footer>
+    <br>
+    <br>
+ 
+
+  <script>
+var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+
+LibroRecetas()
+
+// Obtener la ciudad de la URL
+var urlParams = new URLSearchParams(window.location.search);
+var ciudad = urlParams.get('ciudad');
+var inventario = JSON.parse(localStorage.getItem('inventario'));
+
+DesplegableRecetas("Cocina0")
+DesplegableRecetas("Cocina1")
+
+function DesplegableRecetas(id) {
+	var listaCocinai = document.getElementById(id);
+	var opcionVacia = document.createElement("option");
+	opcionVacia.value = "";
+	opcionVacia.text = "Seleccione una opción";
+	opcionVacia.selected = true;
+	opcionVacia.disabled = true;
+	listaCocinai.add(opcionVacia, listaCocinai.options[0]);
+		// Rellenar la lista desplegable con los objetos del inventario
+		inventario.forEach(function(opcion) {
+		var nuevaOpcion = document.createElement("option");
+		nuevaOpcion.value = opcion.nombre;
+		nuevaOpcion.text = opcion.nombre;
+		listaCocinai.add(nuevaOpcion);
+})
+}
+
+;
+// Cuando cambia el select, añado la imagen
+
+Cocina0.addEventListener("change", function() {
+    var inventario = JSON.parse(localStorage.getItem('inventario'));
+    var seleccion = Cocina0.value;
+    document.getElementById('Coc0').innerHTML = '<img src="Ciudades/Objetos/' + seleccion + '.jpg" alt="' + seleccion + '">';
+    document.getElementById('Titulo2Coc0').textContent = seleccion;
+    var indexObjeto = inventario.findIndex(item => item.nombre === seleccion);
+    //document.getElementById('TituloCoc0').textContent = "Cantidad: " + inventario[indexObjeto].cantidad;
+    //console.log("Opción seleccionada:", seleccion);
+
+    var indexObjeto = inventario.findIndex(item => item.nombre === seleccion);
+    //console.log("index seleccionada:", indexObjeto);
+    //console.log("tienes :", inventario[indexObjeto].cantidad);
+
+});
+Cocina1.addEventListener("change", function() {
+    var seleccion = Cocina1.value;
+    document.getElementById('Coc1').innerHTML = '<img src="Ciudades/Objetos/' + seleccion + '.jpg" alt="' + seleccion + '">';
+    document.getElementById('Titulo2Coc1').textContent = seleccion;
+    var indexObjeto = inventario.findIndex(item => item.nombre === seleccion);
+    //document.getElementById('TituloCoc1').textContent = "Cantidad: " + inventario[indexObjeto].cantidad;
+    //console.log("Opción 2 seleccionada:", seleccion);
+
+});
+
+// Añadir una imagen
+var imagen = AddTienda(ciudad);
+var imagenBar = AddBar(ciudad);
+var imagenCiudad = AddImg(ciudad);
+
+// Actualizar el contenido del título con la ciudad
+var divImagen = document.getElementById('divImagen');
+divImagen.appendChild(imagen);
+
+//Funcion para ver si la receta existe
+
+function CheckRecetaOld(ing1, ing2, ciudad = "") {
+    switch (true) {
+        case ing1 == "Pan" && ing2 == "Carne" && ciudad == "Atenas":
+        case ing2 == "Pan" && ing1 == "Carne" && ciudad == "Atenas":
+            return "Souvlaki"
+            break;
+        case ing1 == "Pan" && ing2 == "Carne" && ciudad == "Cracovia":
+        case ing2 == "Pan" && ing1 == "Carne" && ciudad == "Cracovia":
+            return "Pierogi"
+            break;
+        case ing1 == "Tomate" && ing2 == "Patata" && ciudad == "Madrid":
+        case ing2 == "Tomate" && ing1 == "Patata" && ciudad == "Madrid":
+            return "Bravas"
+            break;
+        case ing1 == "Pescado" && ing2 == "Patata" && ciudad == "Londres":
+        case ing2 == "Pescado" && ing1 == "Patata" && ciudad == "Londres":
+            return "Fish and Chips"
+            break;
+        case ing1 == "Pan" && ing2 == "Mantequilla":
+        case ing2 == "Pan" && ing1 == "Mantequilla":
+            return "Croissant"
+            break;
+        case ing1 == "Pan" && ing2 == "Carne":
+        case ing2 == "Pan" && ing1 == "Carne":
+            return "Hamburguesa"
+            break;
+        case ing1 == "Mostaza" && ing2 == "Carne":
+        case ing2 == "Mostaza" && ing1 == "Carne":
+            return "Bratwurst"
+            break;
+        case ing1 == "Pan" && ing2 == "Tomate":
+        case ing2 == "Pan" && ing1 == "Tomate":
+            return "Pizza"
+            break;
+        case ing1 == "Pan" && ing2 == "Queso":
+        case ing2 == "Pan" && ing1 == "Queso":
+            return "Pao de Queijo"
+            break;
+        case ing1 == "Tomate" && ing2 == "Carne":
+        case ing2 == "Tomate" && ing1 == "Carne":
+            return "Tomates Rellenos"
+            break;
+        default:
+            return "Nada";
+    }
+}
+
+function CheckReceta(ing1, ing2, ciudad = "") {
+  var findReceta = arrayRecetas.findIndex(item => 
+    ((item.ingrediente1 === ing1 && item.ingrediente2 === ing2) || 
+    (item.ingrediente1 === ing2 && item.ingrediente2 === ing1)) && item.ciudad === ciudad
+  );
+ 
+  if (findReceta !== -1) {
+    console.log("Receta : " + findReceta);
+    return arrayRecetas[findReceta].nombre
+  } else {
+    var findRecetaBis = arrayRecetas.findIndex(item => 
+      ((item.ingrediente1 === ing1 && item.ingrediente2 === ing2) || 
+      (item.ingrediente1 === ing2 && item.ingrediente2 === ing1))
+    );
+      if (findRecetaBis !== -1) {
+      console.log("Receta2 : " + findRecetaBis);
+      return arrayRecetas[findRecetaBis].nombre
+      } else {
+        return "Nada";
+      }
+  }
+}
+function Cocinar() {
+    var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+    LibroRecetas();
+    var ingrediente1 = Cocina0.value;
+    var ingrediente2 = Cocina1.value;
+    var inventario = JSON.parse(localStorage.getItem('inventario'));
+    var indexObjeto = inventario.findIndex(item => item.nombre === ingrediente1);
+    var indexObjeto2 = inventario.findIndex(item => item.nombre === ingrediente2);
+    var cantidad1 = inventario[indexObjeto].cantidad;
+    var cantidad2 = inventario[indexObjeto2].cantidad;
+    var receta = CheckReceta(ingrediente1, ingrediente2, ciudad)
+
+    console.log(arrayRecetas);
+
+    if ((cantidad1 > 0) && (cantidad2 > 0)) {
+
+        if (receta == "Nada") {
+            mostrarModal();
+            document.getElementById('TextoModal').textContent = "No hay recetas con estos ingredientes";
+            document.getElementById('fotoModal').innerHTML = '<img src="Ciudades/Objetos/Empty.jpg" alt="Empty">';
+        } else {
+            var indexReceta = arrayRecetas.findIndex(item => item.nombre === receta);
+            var newReceta = arrayRecetas[indexReceta].nueva;
+            var edificio = arrayRecetas[indexReceta].edificio;
+
+            var edificios = JSON.parse(localStorage.getItem('edificios'));
+            var indexEdificio = edificios.findIndex(item => item.nombre === edificio);
+            var estadoEdificio = edificios[indexEdificio].estado;
+
+            //La receta no estaba activa
+            if ((newReceta == "1") && (estadoEdificio == "cerrado")){
+                mostrarModal();
+                document.getElementById('fotoModal').innerHTML = '<img src="Ciudades/Objetos/' + receta + '.jpg" alt="' + receta + '"><img src="Ciudades/Otros/' + edificio + '.jpg" alt="' + edificio + '">';
+                document.getElementById('TextoModal').textContent = "¡Has descubierto una nueva receta : " + receta + " y has abierto un nuevo edificio : " + edificio + "!";
+
+                arrayRecetas[indexReceta].nueva = "0";
+                edificios[indexEdificio].estado = "abierto";
+                localStorage.setItem('arrayRecetas', JSON.stringify(arrayRecetas));
+                localStorage.setItem('edificios', JSON.stringify(edificios));
+            } else if (newReceta == "1") {
+                mostrarModal();
+                document.getElementById('fotoModal').innerHTML = '<img src="Ciudades/Objetos/' + receta + '.jpg" alt="' + receta + '">';
+                document.getElementById('TextoModal').textContent = "¡Has descubierto una nueva receta : " + receta + "!";
+
+                arrayRecetas[indexReceta].nueva = "0";
+                localStorage.setItem('arrayRecetas', JSON.stringify(arrayRecetas));
+            }
+
+            //sumarObjetoInventario(receta,1);
+            //restarObjetoInventario(ingrediente1,1);
+            //restarObjetoInventario(ingrediente2,1);
+            var inventario = JSON.parse(localStorage.getItem('inventario'));
+
+            var indexObjeto = inventario.findIndex(item => item.nombre === ingrediente1);
+            //document.getElementById('TituloCoc0').textContent = "Cantidad : " + inventario[indexObjeto].cantidad;
+            var indexObjeto2 = inventario.findIndex(item => item.nombre === ingrediente2);
+            //document.getElementById('TituloCoc1').textContent = "Cantidad : " + inventario[indexObjeto2].cantidad;
+            var indexObjeto3 = inventario.findIndex(item => item.nombre === receta);
+            //document.getElementById('TituloCoc3').textContent = "Cantidad : " + inventario[indexObjeto3].cantidad;
+            document.getElementById('Coc3').innerHTML = '<img src="Ciudades/Objetos/' + receta + '.jpg" alt="' + receta + '">';
+            document.getElementById('Titulo2Coc3').textContent = receta;
+        }
+    } else {
+        mostrarModal();
+        document.getElementById('TextoModal').textContent = "No tienes ingredientes para cocinar";
+        document.getElementById('fotoModal').innerHTML = '<img src="Ciudades/Objetos/EmptyFridge.jpg" alt="Empty">';
+    }
+
+
+    LibroRecetas();
+}
+
+function LibroRecetas() {
+    var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
+
+    var recetasNoNuevas = arrayRecetas.filter(function(receta) {
+        return receta.nueva === "0";
+    });
+    var recetasEsp = arrayRecetas.filter(function(receta) {
+        return receta.tiporeceta === "especial";
+    });
+    var recetasEspNoNuevas = arrayRecetas.filter(function(receta) {
+        return (receta.tiporeceta === "especial" && receta.nueva === "0");
+    });
+    var recetasUni = arrayRecetas.filter(function(receta) {
+        return receta.tiporeceta === "unica";
+    });
+    var recetasUniNoNuevas = arrayRecetas.filter(function(receta) {
+        return (receta.tiporeceta === "unica" && receta.nueva === "0");
+    });
+
+    //console.log("Dentro de Libro" + recetasNoNuevas.length + " / " + arrayRecetas.length);
+    //console.log("Dentro de Libro Esp " + recetasEspNoNuevas.length + " / " + recetasEsp.length);
+    //console.log("Dentro de Libro Uni " + recetasUniNoNuevas.length + " / " + recetasUni.length);
+    document.getElementById('Titulo2Coc4').textContent = "Recetas : " + recetasNoNuevas.length + " / " + arrayRecetas.length;
+    document.getElementById('Titulo3Coc4').textContent = "Premium : " + recetasEspNoNuevas.length + " / " + recetasEsp.length;
+    document.getElementById('Titulo4Coc4').textContent = "Unicas : " + recetasUniNoNuevas.length + " / " + recetasUni.length;
+}
+
+  </script>
+  
+	
+
+</body>
+</html>

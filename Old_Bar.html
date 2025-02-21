@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a la Aventura</title>
+  <link rel="stylesheet" href="estilos.css">
+
+  <script src="contador.js" defer></script>
+</head>
+<body>
+  <script src="variables.js"></script>
+  <h1 id="tituloBienvenida">Bienvenido al bar de</h1>
+ <h2 id="tituloMes"><span id="contador"></span></h2>
+ <h3 id="tituloDinero">Tienes <span id="dinero"></span> €</h3>
+ <h3 id="alertaDinero"><span id="alertaDinero"></span></h3>
+  
+    <section class="secImagen">
+    <div id="divImagen"></div>
+		<div id="imPetTienda" class="OptionsTienda">
+
+		</div>	
+  </section>
+  
+  <section>
+  	<div>
+		<button onclick="VolverCiudad()">Volver a la ciudad</button>
+	</div>
+	<div style="margin-top: 10px;">
+		<button style="background-color: #333333" id="start"  onclick="Restart()">Reiniciar Juego</button>
+	</div>
+  </section>
+
+  <footer>
+    <br>
+    <br>
+    <p>&copy; 2024 Alba Inc. Todos los derechos reservados.</p>
+	<p>&copy; Todas las imagenenes generadas con IA.</p>
+  </footer>
+
+<br>
+<br>
+ 
+
+  <script>
+
+	// Obtener la ciudad de la URL
+	var urlParams = new URLSearchParams(window.location.search);
+	var ciudad = urlParams.get('ciudad');
+
+	// Actualizar el contenido del título con la ciudad
+	var tituloBienvenida = document.getElementById('tituloBienvenida');
+
+	tituloBienvenida.innerText += ' ' + ciudad
+
+
+	var inventario = JSON.parse(localStorage.getItem('inventario'));
+	console.log("inventario");
+	console.log(inventario);
+	for (var i = 0; i < inventario.length; i++) {
+
+	    if (inventario[i].cantidad > 0) {
+
+	        // Utilizar una función auxiliar para capturar el valor actual de i
+	        (function(index) {
+
+	            var divNuevo = document.createElement("div");
+	            divNuevo.classList.add("imgPetite2")
+
+	            var divNuevo2 = document.createElement("div");
+	            divNuevo2.id = "Bar" + index;
+	            var imagenObj = AddObjeto(inventario[index].nombre);
+	            divNuevo2.appendChild(imagenObj);
+
+
+	            divNuevo.appendChild(divNuevo2);
+
+	            console.log("vas por el " + inventario[index].nombre)
+
+				//var indexObjeto = inventario.findIndex(item => item.nombre === seleccion);
+	            
+				var indexObjeto = objetosJuego.findIndex(item => item.nombre === inventario[index].nombre);
+				
+				//console.log("Buscas el " + inventario[index].nombre)
+				
+	            console.log("vas por el " + index);
+	            console.log("Lo has encontrado en el " + indexObjeto);
+
+	            var divNuevo3 = document.createElement("div");
+	            var tituloNuevo = document.createElement("a");
+	            tituloNuevo.id = "TituloBar" + index;
+
+	            //console.log("inventario" + inventario);
+	            //console.log(objetosJuego);
+
+	            if (index !== -1) {
+	                //console.log(objetosJuego);		
+	                //console.log(objetosJuego[indexObjeto]);		
+	                //console.log("la cantidad de " + objetosJuego[indexObjeto].nombre + " es " + inventario[index].cantidad);		
+	                tituloNuevo.textContent = inventario[index].nombre + " : " + inventario[index].cantidad
+	            } else {
+	                //console.log("No tienes" + inventario[index]);
+	                tituloNuevo.textContent = "Tienes 0"
+	            }
+
+
+	            if (ciudad === objetosJuego[indexObjeto].ciudad || objetosJuego[indexObjeto].ciudad === "all") {
+
+	                //console.log("Estamos en " + ciudad + " y esto es de " + objetosJuego[indexObjeto].ciudad);
+	                precioVenta = objetosJuego[indexObjeto].precio / 2;
+	            } else {
+	                console.log("Estamos en " + ciudad + " y esto es de " + objetosJuego[indexObjeto].ciudad);
+					console.log(indexObjeto)
+					console.log(objetosJuego)
+	                precioVenta = objetosJuego[indexObjeto].precio * 2;
+
+	            }
+
+
+	            var tituloNuevoPrecio = document.createElement("a");
+	            tituloNuevoPrecio.id = "PrecioTienda" + index;
+	            tituloNuevoPrecio.textContent = "Precio : " + precioVenta;
+
+
+	            divNuevo3.appendChild(tituloNuevo);
+	            divNuevo3.appendChild(document.createElement("br"));
+	            divNuevo3.appendChild(tituloNuevoPrecio);
+
+	            divNuevo.appendChild(divNuevo3);
+
+	            var divNuevo4 = document.createElement("div");
+	            var botonNuevo = document.createElement("button");
+	            botonNuevo.id = "Tienda" + index;
+	            botonNuevo.textContent = "Vender ";
+
+
+	            botonNuevo.onclick = function() {
+					precioVenta = CalculaPrecioVenta(ciudad,objetosJuego[indexObjeto].ciudad,objetosJuego[indexObjeto].precio)
+					Vender(objetosJuego[indexObjeto].nombre, precioVenta);
+	            };
+	            console.log("Queres vender" + objetosJuego[indexObjeto].nombre + "a " + precioVenta);
+	            divNuevo4.appendChild(botonNuevo);
+
+	            divNuevo.appendChild(divNuevo4);
+
+	            // Agregar el div al contenedor
+	            imPetTienda.appendChild(divNuevo);
+
+	        })(i)
+	    };
+
+	}
+
+	// Añadir una imagen
+	var imagen = AddBar(ciudad);
+	var imagenBar = AddBar(ciudad);
+	var imagenCiudad = AddImg(ciudad);
+
+	// Actualizar el contenido del título con la ciudad
+	var divImagen = document.getElementById('divImagen');
+	divImagen.appendChild(imagen);
+
+	// Obtener el elemento de la lista desplegable
+	var listaDesplegable = document.getElementById("ciudades");
+
+  </script>
+  
+	
+
+</body>
+</html>
