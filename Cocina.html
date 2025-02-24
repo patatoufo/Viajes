@@ -247,21 +247,26 @@ function CheckRecetaOld(ing1, ing2, ciudad = "") {
 }
 
 function CheckReceta(ing1, ing2, ciudad = "") {
-  // Buscar receta que coincida con los ingredientes y la ciudad (si se especifica)
   var findReceta = arrayRecetas.findIndex(item => 
     ((item.ingrediente1 === ing1 && item.ingrediente2 === ing2) || 
-     (item.ingrediente1 === ing2 && item.ingrediente2 === ing1)) &&
-    (ciudad === "" || item.ciudad === ciudad) // Solo acepta recetas de la ciudad dada
+    (item.ingrediente1 === ing2 && item.ingrediente2 === ing1)) && item.ciudad === ciudad
   );
-
-  // Si se encuentra una receta válida, devolver su nombre
+ 
   if (findReceta !== -1) {
-    console.log("Receta encontrada: " + arrayRecetas[findReceta].nombre);
-    return arrayRecetas[findReceta].nombre;
+    console.log("Receta : " + findReceta);
+    return arrayRecetas[findReceta].nombre
+  } else {
+    var findRecetaBis = arrayRecetas.findIndex(item => 
+      ((item.ingrediente1 === ing1 && item.ingrediente2 === ing2) || 
+      (item.ingrediente1 === ing2 && item.ingrediente2 === ing1)) && item.ciudad === "All"
+    );
+      if (findRecetaBis !== -1) {
+      console.log("Receta2 : " + findRecetaBis);
+      return arrayRecetas[findRecetaBis].nombre
+      } else {
+        return "Nada";
+      }
   }
-
-  // Si no se encuentra ninguna receta válida, devolver null o un mensaje
-  return "Nada"; // También podrías usar "" o "Nada"
 }
 function Cocinar() {
     var arrayRecetas = JSON.parse(localStorage.getItem('arrayRecetas'));
