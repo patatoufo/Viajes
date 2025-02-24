@@ -44,8 +44,10 @@
   <script>
 
 	// Obtener la ciudad de la URL
-		var urlParams = new URLSearchParams(window.location.search);
-		var ciudad = urlParams.get('ciudad');
+		//var urlParams = new URLSearchParams(window.location.search);
+		//var ciudad = urlParams.get('ciudad');
+		
+		var ciudad = 'null';
 
 	var inventario = JSON.parse(localStorage.getItem('inventario'));
  for (var i = 0; i < inventario.length; i++) {
