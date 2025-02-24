@@ -270,7 +270,7 @@ function Restart() {
     iniciarContador();
 	iniciarDinero();
 	iniciarInventario();
-    window.location.href = 'Index.html';
+    window.location.href = 'index.html';
 }
 
 function FindImg(city) {
